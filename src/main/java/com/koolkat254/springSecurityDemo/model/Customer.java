@@ -1,50 +1,37 @@
 package com.koolkat254.springSecurityDemo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.Data;
 
+import jakarta.persistence.*;
+import java.sql.Date;
+
+@Data
 @Entity
+@Table(name = "customer")
 public class Customer {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO,generator="native")
-    @GenericGenerator(name = "native",strategy = "native")
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
+    private int Id;
+
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
+
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
-    private String pwd;
+
+    @Column(name = "mobile_number", nullable = false, length = 20)
+    private String mobileNumber;
+
+    @Column(name = "password", nullable = false, length = 500)
+    private String password;
+
+    @Column(name = "role", nullable = false, length = 100)
     private String role;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
+    @Column(name = "create_date")
+    @Temporal(TemporalType.DATE)
+    private Date createDate;
 }
+

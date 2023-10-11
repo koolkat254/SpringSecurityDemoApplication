@@ -29,7 +29,7 @@ public class ProjectUsernamePwdAuthProvider implements AuthenticationProvider {
         String pwd = authentication.getCredentials().toString();
         List<Customer> customer = customerRepository.findByEmail(username);
         if (customer.size()>0){
-            if (passwordEncoder.matches(pwd,customer.get(0).getPwd())){
+            if (passwordEncoder.matches(pwd,customer.get(0).getPassword())){
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(new SimpleGrantedAuthority(customer.get(0).getRole()));
                 return new UsernamePasswordAuthenticationToken(username,pwd,authorities);
