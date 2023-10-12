@@ -1,8 +1,6 @@
 package com.koolkat254.springSecurityDemo.config;
 
-import com.koolkat254.springSecurityDemo.config.filter.AuthoritiesLoggingAfterFilter;
-import com.koolkat254.springSecurityDemo.config.filter.CsrfCookieFilter;
-import com.koolkat254.springSecurityDemo.config.filter.RequestValidationBeforeFilter;
+import com.koolkat254.springSecurityDemo.config.filter.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,7 +14,8 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import java.util.Collections;
+
+import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -29,31 +28,29 @@ public class ProjectSecurityConfig {
         requestHandler.setCsrfRequestAttributeName("_csrf");
 
         http
-            .securityContext((context) -> context.requireExplicitSave(false))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/contact","/register")
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
             .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+            .addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
             .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+            .addFilterBefore(new JwtTokenValidatorFilter(), BasicAuthenticationFilter.class)
             .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
                 @Override
                 public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-                    config.setAllowedMethods(Collections.singletonList("*"));
+                    config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+                    config.setAllowedMethods(Arrays.asList("GET","POST"));
                     config.setAllowCredentials(true);
-                    config.setAllowedHeaders(Collections.singletonList("*"));
+                    config.setAllowedHeaders(Arrays.asList("*"));
+                    config.setExposedHeaders(Arrays.asList("Authorization"));
                     config.setMaxAge(3600L);
                     return config;
                 }
             }))
             .authorizeHttpRequests((authorize) -> authorize
                     .requestMatchers("/notices","/contact","/register").permitAll()
-//                    .requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
-//                    .requestMatchers("/myBalance").hasAnyAuthority("VIEWACCOUNT","VIEWBALANCE")
-//                    .requestMatchers("/myLoans").hasAuthority("VIEWLOANS")
-//                    .requestMatchers("/myCards").hasAuthority("VIEWCARDS")
                     .requestMatchers("/myAccount").hasRole("USER")
                     .requestMatchers("/myBalance").hasAnyRole("USER","ADMIN")
                     .requestMatchers("/myLoans").hasRole("USER")
