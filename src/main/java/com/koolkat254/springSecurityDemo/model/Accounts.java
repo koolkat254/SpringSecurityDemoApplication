@@ -1,12 +1,9 @@
 package com.koolkat254.springSecurityDemo.model;
 
-import lombok.Data;
-
 import jakarta.persistence.*;
 
 import java.sql.Date;
 
-@Data
 @Entity
 @Table(name = "accounts")
 public class Accounts {
@@ -28,5 +25,45 @@ public class Accounts {
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id", nullable = false)
     private Customer customer;
+
+    public int getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(int accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public String getBranchAddress() {
+        return branchAddress;
+    }
+
+    public void setBranchAddress(String branchAddress) {
+        this.branchAddress = branchAddress;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 }
 

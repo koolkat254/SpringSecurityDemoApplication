@@ -1,11 +1,8 @@
 package com.koolkat254.springSecurityDemo.model;
 
-import lombok.Data;
-
 import jakarta.persistence.*;
 import java.sql.Date;
 
-@Data
 @Entity
 @Table(name = "account_transactions")
 public class AccountTransactions {
@@ -41,6 +38,78 @@ public class AccountTransactions {
     @ManyToOne
     @JoinColumn(name = "account_number", referencedColumnName = "account_number", nullable = false)
     private Accounts account;
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public Date getTransactionDate() {
+        return transactionDate;
+    }
+
+    public void setTransactionDate(Date transactionDate) {
+        this.transactionDate = transactionDate;
+    }
+
+    public String getTransactionSummary() {
+        return transactionSummary;
+    }
+
+    public void setTransactionSummary(String transactionSummary) {
+        this.transactionSummary = transactionSummary;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
+    }
+
+    public int getTransactionAmount() {
+        return transactionAmount;
+    }
+
+    public void setTransactionAmount(int transactionAmount) {
+        this.transactionAmount = transactionAmount;
+    }
+
+    public int getClosingBalance() {
+        return closingBalance;
+    }
+
+    public void setClosingBalance(int closingBalance) {
+        this.closingBalance = closingBalance;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Accounts getAccount() {
+        return account;
+    }
+
+    public void setAccount(Accounts account) {
+        this.account = account;
+    }
 }
 
 

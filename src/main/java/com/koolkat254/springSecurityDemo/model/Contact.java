@@ -1,11 +1,8 @@
 package com.koolkat254.springSecurityDemo.model;
 
-import lombok.Data;
-
 import jakarta.persistence.*;
 import java.sql.Date;
 
-@Data
 @Entity
 @Table(name = "contact_messages")
 public class Contact {
@@ -29,6 +26,54 @@ public class Contact {
     @Column(name = "create_date")
     @Temporal(TemporalType.DATE)
     private Date createDate;
+
+    public String getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(String contactId) {
+        this.contactId = contactId;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 }
 
 

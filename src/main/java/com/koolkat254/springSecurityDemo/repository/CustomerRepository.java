@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
-    List<Customer> findByEmail(String email);
+    Customer findByEmail(String email);
 
 }

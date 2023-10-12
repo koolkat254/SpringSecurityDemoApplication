@@ -1,11 +1,8 @@
 package com.koolkat254.springSecurityDemo.model;
 
-import lombok.Data;
-
 import jakarta.persistence.*;
 import java.sql.Date;
 
-@Data
 @Entity
 @Table(name = "loans")
 public class Loans {
@@ -38,5 +35,69 @@ public class Loans {
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id", nullable = false)
     private Customer customer;
+
+    public int getLoanNumber() {
+        return loanNumber;
+    }
+
+    public void setLoanNumber(int loanNumber) {
+        this.loanNumber = loanNumber;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getLoanType() {
+        return loanType;
+    }
+
+    public void setLoanType(String loanType) {
+        this.loanType = loanType;
+    }
+
+    public int getTotalLoan() {
+        return totalLoan;
+    }
+
+    public void setTotalLoan(int totalLoan) {
+        this.totalLoan = totalLoan;
+    }
+
+    public int getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(int amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+
+    public int getOutstandingAmount() {
+        return outstandingAmount;
+    }
+
+    public void setOutstandingAmount(int outstandingAmount) {
+        this.outstandingAmount = outstandingAmount;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 }
 

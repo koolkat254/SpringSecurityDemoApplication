@@ -1,5 +1,6 @@
 package com.koolkat254.springSecurityDemo.config;
 
+import com.koolkat254.springSecurityDemo.model.Authority;
 import com.koolkat254.springSecurityDemo.model.Customer;
 import com.koolkat254.springSecurityDemo.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class ProjectUsernamePwdAuthProvider implements AuthenticationProvider {
@@ -27,12 +29,10 @@ public class ProjectUsernamePwdAuthProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String pwd = authentication.getCredentials().toString();
-        List<Customer> customer = customerRepository.findByEmail(username);
-        if (customer.size()>0){
-            if (passwordEncoder.matches(pwd,customer.get(0).getPassword())){
-                List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority(customer.get(0).getRole()));
-                return new UsernamePasswordAuthenticationToken(username,pwd,authorities);
+        Customer customer = customerRepository.findByEmail(username);
+        if (customer != null){
+            if (passwordEncoder.matches(pwd,customer.getPassword())){
+                return new UsernamePasswordAuthenticationToken(username,pwd,getGrantedAuthorities(customer.getAuthorities()));
             }else{
                 throw new BadCredentialsException("Invalid password!");
             }
@@ -41,6 +41,13 @@ public class ProjectUsernamePwdAuthProvider implements AuthenticationProvider {
         }
     }
 
+    private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities){
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        for (Authority authority: authorities){
+            grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+        }
+        return grantedAuthorities;
+    }
     @Override
     public boolean supports(Class<?> authentication) {
         return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
