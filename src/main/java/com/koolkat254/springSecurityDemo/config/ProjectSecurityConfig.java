@@ -1,6 +1,8 @@
 package com.koolkat254.springSecurityDemo.config;
 
+import com.koolkat254.springSecurityDemo.config.filter.AuthoritiesLoggingAfterFilter;
 import com.koolkat254.springSecurityDemo.config.filter.CsrfCookieFilter;
+import com.koolkat254.springSecurityDemo.config.filter.RequestValidationBeforeFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,6 +34,8 @@ public class ProjectSecurityConfig {
             .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/contact","/register")
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+            .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+            .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
             .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
                 @Override
                 public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
