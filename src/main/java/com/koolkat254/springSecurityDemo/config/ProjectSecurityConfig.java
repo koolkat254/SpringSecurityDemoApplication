@@ -3,10 +3,12 @@ package com.koolkat254.springSecurityDemo.config;
 import com.koolkat254.springSecurityDemo.config.filter.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -27,15 +29,15 @@ public class ProjectSecurityConfig {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName("_csrf");
 
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloackRoleConverter());
+
         http
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/contact","/register")
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-            .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
-            .addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
-            .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
-            .addFilterBefore(new JwtTokenValidatorFilter(), BasicAuthenticationFilter.class)
             .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
                 @Override
                 public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
@@ -56,13 +58,8 @@ public class ProjectSecurityConfig {
                     .requestMatchers("/myLoans").hasRole("USER")
                     .requestMatchers("/myCards").hasRole("USER")
                     .anyRequest().authenticated())
-            .formLogin(withDefaults())
-            .httpBasic(withDefaults());
+//            .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter);
+            .oauth2ResourceServer((oauth2) -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)));
         return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

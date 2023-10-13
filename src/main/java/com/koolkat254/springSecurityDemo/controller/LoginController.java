@@ -20,29 +20,6 @@ public class LoginController {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody Customer customer) {
-        ResponseEntity response = null;
-        try {
-            String hashPwd = passwordEncoder.encode(customer.getPassword());
-            customer.setPassword(hashPwd);
-            customer.setCreateDate(new Date(System.currentTimeMillis()));
-            Customer savedCustomer = customerRepository.save(customer);
-            if (savedCustomer.getId() > 0) {
-                response = ResponseEntity
-                        .status(HttpStatus.CREATED)
-                        .body("Given user details are successfully registered");
-            }
-        } catch (Exception ex) {
-            response = ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An exception occured due to " + ex.getMessage());
-        }
-        return response;
-    }
 
     @RequestMapping("/user")
     public Customer getUserDetailsAfterLogin(Authentication authentication) {

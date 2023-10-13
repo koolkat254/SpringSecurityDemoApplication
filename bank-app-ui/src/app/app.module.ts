@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER,NgModule } from '@angular/core';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClientXsrfModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -14,9 +15,23 @@ import { AccountComponent } from './components/account/account.component';
 import { BalanceComponent } from './components/balance/balance.component';
 import { LoansComponent } from './components/loans/loans.component';
 import { CardsComponent } from './components/cards/cards.component';
-import { XhrInterceptor } from './interceptors/app.request.interceptor';
 import { AuthActivateRouteGuard } from './routeguards/auth.routeguard';
 import { HomeComponent } from './components/home/home.component';
+
+function initializeKeycloak(keycloak: KeycloakService) {
+  return () =>
+    keycloak.init({
+      config: {
+        url: 'http://localhost:8180',
+        realm: 'springSecurityDemo',
+        clientId: 'springSecurityDemoPublicClient'
+      },
+      initOptions: {
+        pkceMethod: 'S256',
+        redirectUri: 'http://localhost:4200/dashboard'
+      },loadUserProfileAtStartUp: false
+    });
+}
 
 @NgModule({
   declarations: [
@@ -36,6 +51,7 @@ import { HomeComponent } from './components/home/home.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    KeycloakAngularModule,
     FormsModule,
     HttpClientModule,
     HttpClientXsrfModule.withOptions({
@@ -45,10 +61,11 @@ import { HomeComponent } from './components/home/home.component';
   ],
   providers: [
     {
-      provide : HTTP_INTERCEPTORS,
-      useClass : XhrInterceptor,
-      multi : true
-    },AuthActivateRouteGuard
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      deps: [KeycloakService]
+    }
   ],
   bootstrap: [AppComponent]
 })
