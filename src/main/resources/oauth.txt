@@ -1,0 +1,5 @@
+Github Client ID
+27e61562fbcb6c2c9cc2
+
+Github Client secrets
+5f9442a8f15672fb7a7e098af0df4276fc004f99
