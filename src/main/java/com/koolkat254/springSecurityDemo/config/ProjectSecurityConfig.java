@@ -58,7 +58,6 @@ public class ProjectSecurityConfig {
                     .requestMatchers("/myLoans").hasRole("USER")
                     .requestMatchers("/myCards").hasRole("USER")
                     .anyRequest().authenticated())
-//            .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter);
             .oauth2ResourceServer((oauth2) -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)));
         return http.build();
     }

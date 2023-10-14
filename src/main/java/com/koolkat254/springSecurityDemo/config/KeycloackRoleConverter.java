@@ -12,6 +12,7 @@ public class KeycloackRoleConverter implements Converter<Jwt, Collection<Granted
 
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
+        System.out.println(jwt);
         Map<String, Object> realmAccess = (Map<String, Object>) jwt.getClaims().get("realm_access");
 
         if (realmAccess == null || realmAccess.isEmpty()){
